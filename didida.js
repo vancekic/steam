@@ -1,10 +1,8 @@
 var steam = require('steam-searcher')
 
 
-steam.find({ search: { genres: [ { id: '2', description: 'Action' } ]} }, function (err, game) {
+steam.find({ search: 'Total War: Three Kingdoms' }, function (err, game) {
     if (err) console.log(err);
     //game is the data as a JSON.
-    console.log(game.name)
-    console.log(game.categories)
+    console.log('Current price = ' + game.price_overview.final_formatted)
 });
-
