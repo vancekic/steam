@@ -2,7 +2,7 @@ var steam = require('steam-searcher')
 var converter = require('json-2-csv')
 const fs = require ('fs')
 
-steam.find({ search: 'Rocket' }, function (err, game) {
+steam.find({ search: 'Creed' }, function (err, game) {
     if (err) return console.log(err);
     //game is the data as a JSON.
     console.log('Converting JSON to CSV...')
