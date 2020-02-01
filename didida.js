@@ -1,4 +1,4 @@
-var steam = require('steam-searcher')
+var steam = require('./index')
 var converter = require('json-2-csv')
 const fs = require ('fs')
 
