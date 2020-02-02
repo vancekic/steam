@@ -3,7 +3,7 @@ var converter = require('json-2-csv')
 const fs = require ('fs')
 
 
-steam.find(function (err, game) {
+/* steam.find(function (err, game) {
     if (err) return console.log(err);
     //game is the data as a JSON.
     console.log('Converting JSON to CSV...')
@@ -19,7 +19,7 @@ steam.find(function (err, game) {
             })
         })
     })
-});
+}); */
 
 /*
 steam.findGame({ search: 'Creed' }, function (err, game) {
@@ -41,7 +41,7 @@ steam.findGame({ search: 'Creed' }, function (err, game) {
 });
 */
 
-/* steam.findGenre({ tag: 'Strategy', page: '0' }, function (err, game) {
+steam.findGenre({ tag: 'strategy', type: 'games', page: 2 }, function (err, game) {
     if (err) return console.log(err)
     //game is the data as a JSON.
     console.log('Converting JSON to CSV...')
@@ -57,4 +57,4 @@ steam.findGame({ search: 'Creed' }, function (err, game) {
             })
         })
     })
-}); */
+});

@@ -133,12 +133,50 @@ function findJSON(game, callback) {
     return FireGeneralRequestFromJSON(reqUrl, callback);
 };
 
-function findGenre(genre, callback) {
-    let tag = genre.tag,
-    page = genre.page,
-    reqUrl = `https://store.steampowered.com/tags/en/${tag}#p=${page}`;
+function findGenre(params, callback) {
+    ValidateSearchInput(params.tag, params.type, params.page, function(reqUrl) {
+        if (reqUrl) {
+            return FireGeneralRequestFromText(reqUrl, callback);
+        } else {
+            console.log('Problem with input parameters, can not search steam store');
+        }
+    });
+};
 
-    return FireGeneralRequestFromText(reqUrl, callback);
+function ValidateSearchInput(tag, type, page, callback) {
+    let customTag = searchTagsArray[tag],
+    customType = searchTypeArray[type];
+
+    if (customTag && !isNaN(page) && customType) {
+        console.log('Request will be: ' + `https://store.steampowered.com/search/?sort_by=Released_DESC&tags=${customTag}&category1=${customType}&page=${page}`);
+        return callback(`https://store.steampowered.com/search/?sort_by=Released_DESC&tags=${customTag}&category1=${customType}&page=${page}`);
+    } else {
+        return callback(0);
+    }
+};
+
+let searchTagsArray = {
+    strategy: '9',
+    action: '19',
+    rpg: '122',
+    turnbasedstrategy: '1741',
+    grandstrategy: '4364',
+    strategyrpg: '17305',
+    actionadventure: '4106',
+    simulation: '599'
+};
+
+let searchTypeArray = {
+    games: '998',
+    software: '994',
+    dlc: '21',
+    demos: '10',
+    soundtrack: '990',
+    videos: '992',
+    mods: '997',
+    hardware: '993',
+    trailers: '999',
+    bundles: '996'
 };
 
 module.exports.find = findFixedUrl;
