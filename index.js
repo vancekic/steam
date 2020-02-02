@@ -10,6 +10,7 @@ function BuildAppIDArray(htmlSrc) {
     while (matches = findAppIdRegExp.exec(htmlSrc)) {
         appIds.push(matches[1]);
     }
+    console.log('found ' + appIds.length + ' games!')
     console.log('appIds:', appIds);
     return appIds;
     /*
@@ -59,20 +60,14 @@ function GetAppIDDetails(arrayIDs, callback) {
 
 function FireGeneralRequestFromText(reqUrl, callback) {
     request.get({
-        url: reqUrl,
-        //timeout: timeout
+        url: reqUrl
     }, function (err, res, body) {
-        console.log('error:', err);
-        console.log('res.status:', res.statusCode);
-
         if (err) return callback(err);
         if (res.statusCode !== 200) return callback(new Error('request failed (' + res.statusCode + ')'));
         if (!body) return callback(new Error('failed to get body content'));
 
-        console.log('body:', body);
         let appIDArray = BuildAppIDArray(body);
         if (appIDArray) {
-            console.log('found text for ' + appIDArray.length + ' games on that page!')
             console.log("Fetching details...")
             GetAppIDDetails(appIDArray, callback);
         } else {
@@ -81,10 +76,9 @@ function FireGeneralRequestFromText(reqUrl, callback) {
     })
 };
 
-function FireGeneralRequestFromJSON(timeout, reqUrl, callback) {
+function FireGeneralRequestFromJSON(reqUrl, callback) {
     request.get({
-        url: reqUrl,
-        timeout: timeout
+        url: reqUrl
     }, function (err, res, body) {
 
         if (err) return callback(err);
@@ -109,11 +103,14 @@ function findFixedUrl(callback) {
 
         // to get first 100 top selling games, ask for 4 pages of 25 results
         const numberPagesMax = 4;
-        //const timeout = 1000;
-        const reqUrl = `https://store.steampowered.com/tags/en/Turn-Based%20Strategy/#p=0&tab=TopSellers`;  // page 1
-        //let reqUrl = `https://store.steampowered.com/search/?sort_by=Released_DESC&tags=9&category1=998`;
+        // i get served 25 games from this request, which is first page.
+        // TODO: accept max games as an argument and iterate over pages until this number is reached
+        const reqUrl = `https://store.steampowered.com/search/?tags=9`; // ALL Strategy products ~ 13.7k games displayed from html.
+        // const reqUrl = `https://store.steampowered.com/search/?tags=19`; // ALL Action products ~ 13.7k games displayed from html, only 76 served here.
+        // const reqUrl = `https://store.steampowered.com/tags/en/Turn-Based%20Strategy/#p=0&tab=TopSellers`;  // page 1
+        // let reqUrl = `https://store.steampowered.com/search/?sort_by=Released_DESC&tags=9&category1=998`;
         // TODO: add requets for more pages of results with the following format
-        //reqUrl = `https://store.steampowered.com/tags/en/Strategy#p=1&tab=TopSellers`;    // page 2
+        // reqUrl = `https://store.steampowered.com/tags/en/Strategy#p=1&tab=TopSellers`;    // page 2
 
     return FireGeneralRequestFromText(reqUrl, callback);
 };
@@ -130,19 +127,18 @@ function findJSON(game, callback) {
     if (!game.search)
         return callback('missing search input');
 
-    var timeout = 1000,
-        search = game.search,
-        reqUrl = `http://store.steampowered.com/api/storesearch/?term={${search}}&l=english&cc=US`;
+    let search = game.search,
+    reqUrl = `http://store.steampowered.com/api/storesearch/?term={${search}}&l=english&cc=US`;
 
-    return FireGeneralRequestFromJSON(timeout, reqUrl, callback);
+    return FireGeneralRequestFromJSON(reqUrl, callback);
 };
 
 function findGenre(genre, callback) {
-    var timeout = 1000,
-    genre = genre.search,
-    reqUrl = `https://store.steampowered.com/tags/en/${genre}#p=0&tab=ComingSoon`;
+    let tag = genre.tag,
+    page = genre.page,
+    reqUrl = `https://store.steampowered.com/tags/en/${tag}#p=${page}`;
 
-    return FireGeneralRequestFromText(timeout, reqUrl, callback);
+    return FireGeneralRequestFromText(reqUrl, callback);
 };
 
 module.exports.find = findFixedUrl;

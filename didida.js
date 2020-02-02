@@ -39,8 +39,9 @@ steam.findGame({ search: 'Creed' }, function (err, game) {
         })
     })
 });
+*/
 
-steam.findGenre({ search: 'Strategy' }, function (err, game) {
+/* steam.findGenre({ tag: 'Strategy', page: '0' }, function (err, game) {
     if (err) return console.log(err)
     //game is the data as a JSON.
     console.log('Converting JSON to CSV...')
@@ -56,5 +57,4 @@ steam.findGenre({ search: 'Strategy' }, function (err, game) {
             })
         })
     })
-});
-*/
+}); */
